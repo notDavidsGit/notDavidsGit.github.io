@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOT DAVID</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,400;1,800&family=Nunito+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #f7f9fc;
+      --white:    #ffffff;
+      --navy:     #1e3a5f;
+      --teal:     #4ec8c0;
+      --teal-lt:  #a8e8e4;
+      --teal-bg:  #e6f8f7;
+      --pink:     #f0a0c0;
+      --pink-lt:  #fad4e5;
+      --pink-bg:  #fef0f6;
+      --blue:     #6aaee8;
+      --blue-bg:  #e8f3fd;
+      --muted:    #6b7f96;
+      --border:   #e0eaf4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--navy);
+      font-family: 'Nunito Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Blob decorations ── */
+    .blob {
+      position: fixed;
+      border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+      filter: blur(0px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.18;
+    }
+    .blob-teal {
+      width: 520px; height: 520px;
+      background: var(--teal);
+      top: -180px; left: -160px;
+    }
+    .blob-pink {
+      width: 380px; height: 380px;
+      background: var(--pink);
+      bottom: -100px; right: -80px;
+      border-radius: 40% 60% 45% 55% / 55% 45% 60% 40%;
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 2rem 0;
+      gap: 0.75rem;
+      opacity: 0;
+      animation: fadeDown 0.6s 0.1s forwards;
+    }
+
+    .logo-pill {
+      background: var(--navy);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      padding: 0.35rem 0.85rem;
+      border-radius: 100px;
+    }
+
+    .logo-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 3rem 0 5rem;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--teal-bg);
+      color: var(--teal);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      border: 1.5px solid var(--teal-lt);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+    .hero-eyebrow::before { content: '●'; font-size: 0.5rem; }
+
+    .hero-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--navy);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s forwards;
+    }
+
+    .hero-title .paren { color: var(--teal); }
+    .hero-title .highlight {
+      position: relative;
+      display: inline-block;
+    }
+    .hero-title .highlight::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 4px; right: 0;
+      height: 8px;
+      background: var(--pink-lt);
+      z-index: -1;
+      border-radius: 4px;
+    }
+
+    .hero-desc {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 500px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s forwards;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.65s forwards;
+    }
+
+    .tag {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      cursor: default;
+    }
+    .tag:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: var(--teal-bg);
+    }
+
+    /* ── Section headers ── */
+    .section { padding: 4rem 0; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .section-label {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--navy);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1.5px;
+      background: var(--border);
+      border-radius: 1px;
+    }
+
+    /* ── Channel Cards ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      padding: 1.75rem 1.5rem;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      text-decoration: none;
+      color: var(--navy);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(30,58,95,0.08);
+      border-color: var(--card-border, var(--teal));
+    }
+
+    .card-icon-wrap {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 1.1rem;
+      background: var(--card-icon-bg, var(--teal-bg));
+    }
+
+    .card-platform {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--card-color, var(--teal));
+      margin-bottom: 0.3rem;
+    }
+
+    .card-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: var(--navy);
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .card-cta {
+      margin-top: 1.25rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--card-color, var(--teal));
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .card-cta::after {
+      content: '→';
+      transition: transform 0.2s;
+    }
+    .card:hover .card-cta::after { transform: translateX(4px); }
+
+    /* ── Demo items ── */
+    .demo-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .demo-item {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.1rem 1.5rem;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      text-decoration: none;
+      color: var(--navy);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .demo-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 6px 20px rgba(30,58,95,0.07);
+      border-color: var(--item-color, var(--teal));
+    }
+
+    .demo-num {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.75rem;
+      color: var(--item-color, var(--teal));
+      min-width: 1.5rem;
+    }
+
+    .demo-info { flex: 1; }
+
+    .demo-title {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.92rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .demo-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .demo-badge {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 100px;
+      background: var(--item-bg, var(--teal-bg));
+      color: var(--item-color, var(--teal));
+      border: 1px solid var(--item-border, var(--teal-lt));
+      white-space: nowrap;
+    }
+
+    .demo-arrow {
+      color: var(--muted);
+      font-size: 0.85rem;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .demo-item:hover .demo-arrow {
+      transform: translateX(3px);
+      color: var(--item-color, var(--teal));
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1.5px solid var(--border);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 2rem 0 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      color: var(--navy);
+    }
+    .footer-logo span { color: var(--teal); }
+
+    .footer-copy {
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--teal-lt); border-radius: 3px; }
+
+    @media (max-width: 480px) {
+      .demo-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- put banner in the background -->
+  <img src="./website_banner.png" alt="Banner" style="position: fixed; top: 110px; left: 0; width: 100%; height: auto; z-index: 0; opacity: 0.05; pointer-events: none;">
+  <div class="blob blob-teal"></div>
+  <!-- <div class="blob blob-pink"></div> -->
+  
+
+  <div class="page">
+
+    <!-- Header -->
+    <!--<header class="header">
+      <div class="logo-pill">(NOT) DAVID</div>
+      <span class="logo-sub">low-key educational.</span>
+    </header>
+    -->
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-eyebrow">Now with a website</div>
+      <h1 class="hero-title">
+        <span class="paren">(</span>NOT<span class="paren">)</span>
+        <span class="highlight">DAVID</span>
+      </h1>
+      <p class="hero-desc">
+        From Anime to Wikipedia, understanding the world through data, math, and science.
+      </p>
+      <div class="hero-tags">
+        <span class="tag">Data Science</span>
+        <span class="tag">Statistics</span>
+        <span class="tag">Mathematics</span>
+        <span class="tag">Physics</span>
+        <span class="tag">Network Theory</span>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Channels -->
+    <section class="section">
+      <div class="section-header reveal">
+        <div class="section-dot" style="background: var(--teal)"></div>
+        <span class="section-label">Watch &amp; Support</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="cards-grid">
+        <a href="https://youtu.be/o879xRxmwmU?si=ab2l7nW4WhOSx4Dz" target="_blank" rel="noopener"
+           class="card reveal"
+           style="--card-color:#e03b32; --card-border:#ffc9c7; --card-icon-bg:#fff0ef;">
+          <div class="card-icon-wrap">▶</div>
+          <p class="card-platform">YouTube</p>
+          <p class="card-title">Free Videos</p>
+          <p class="card-desc">All the main stuff — explanations, and deep-dives.</p>
+          <span class="card-cta">Visit channel</span>
+        </a>
+
+        <a href="https://nebula.tv/notdavid" target="_blank" rel="noopener"
+           class="card reveal reveal-delay-1"
+           style="--card-color:#4ec8c0; --card-border:var(--teal-lt); --card-icon-bg:var(--teal-bg);">
+          <div class="card-icon-wrap">✦</div>
+          <p class="card-platform">Nebula</p>
+          <p class="card-title">Extended Cuts</p>
+          <p class="card-desc">Longer explorations, early access, and bonus content on the creator-owned platform.</p>
+          <span class="card-cta">Watch on Nebula</span>
+        </a>
+
+        <a href="https://patreon.com/notdavid" target="_blank" rel="noopener"
+           class="card reveal reveal-delay-2"
+           style="--card-color:#d9568a; --card-border:var(--pink-lt); --card-icon-bg:var(--pink-bg);">
+          <div class="card-icon-wrap">◈</div>
+          <p class="card-platform">Patreon</p>
+          <p class="card-title">Direct Support</p>
+          <p class="card-desc">Same benefits as Nebula, but with video progression updates, papers on datascience and physics, and recommendations.</p>
+          <span class="card-cta">Become a patron</span>
+        </a>
+
+        
+        <a href="https://www.youtube.com/@notdavidsecondary9958" target="_blank" rel="noopener"
+           class="card reveal"
+           style="--card-color:#d4625c; --card-border:#ffc9c7; --card-icon-bg:#fff0ef;">
+          <div class="card-icon-wrap">▶</div>
+          <p class="card-platform">YouTube</p>
+          <p class="card-title">Secondary Channel</p>
+          <p class="card-desc">Smaller videos, more frequent... hopefully.</p>
+          <span class="card-cta">Visit channel</span>
+        </a>
+      </div>
+    </section>
+
+    <hr class="divider">
+
+    <!-- Demos -->
+    <section class="section">
+      <div class="section-header reveal">
+        <div class="section-dot" style="background: var(--pink)"></div>
+        <span class="section-label">Interactive Demos</span>
+        <div class="section-line"></div>
+      </div>
+
+      <div class="demo-list reveal">
+
+        <!--<a href="#" class="demo-item"
+           style="--item-color:#4ec8c0; --item-bg:var(--teal-bg); --item-border:var(--teal-lt);">
+          <span class="demo-num">01</span>
+          <div class="demo-info">
+            <p class="demo-title">Gaussian Distribution Explorer</p>
+            <p class="demo-meta">Adjust μ and σ in real time</p>
+          </div>
+          <span class="demo-badge">Statistics</span>
+          <span class="demo-arrow">→</span>
+        </a>
+
+        <a href="#" class="demo-item"
+           style="--item-color:#6aaee8; --item-bg:var(--blue-bg); --item-border:#c2ddf7;">
+          <span class="demo-num">02</span>
+          <div class="demo-info">
+            <p class="demo-title">Network Percolation Simulator</p>
+            <p class="demo-meta">Watch phase transitions emerge</p>
+          </div>
+          <span class="demo-badge">Networks</span>
+          <span class="demo-arrow">→</span>
+        </a>
+
+        <a href="#" class="demo-item"
+           style="--item-color:#d9568a; --item-bg:var(--pink-bg); --item-border:var(--pink-lt);">
+          <span class="demo-num">03</span>
+          <div class="demo-info">
+            <p class="demo-title">Fourier Series Visualiser</p>
+            <p class="demo-meta">Build any wave from sines</p>
+          </div>
+          <span class="demo-badge">Mathematics</span>
+          <span class="demo-arrow">→</span>
+        </a>
+
+        <a href="#" class="demo-item"
+           style="--item-color:#4ec8c0; --item-bg:var(--teal-bg); --item-border:var(--teal-lt);">
+          <span class="demo-num">04</span>
+          <div class="demo-info">
+            <p class="demo-title">Double Pendulum Chaos</p>
+            <p class="demo-meta">Sensitivity to initial conditions</p>
+          </div>
+          <span class="demo-badge">Physics</span>
+          <span class="demo-arrow">→</span>
+        </a>
+
+        <a href="#" class="demo-item"
+           style="--item-color:#6aaee8; --item-bg:var(--blue-bg); --item-border:#c2ddf7;">
+          <span class="demo-num">05</span>
+          <div class="demo-info">
+            <p class="demo-title">Bayesian Inference Playground</p>
+            <p class="demo-meta">Prior → evidence → posterior</p>
+          </div>
+          <span class="demo-badge">Data Science</span>
+          <span class="demo-arrow">→</span>
+        </a>
+      -->
+      </div>
+    </section>
+
+    
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span class="footer-logo"><span>(NOT)</span> DAVID</span>
+      <span class="footer-copy">© 2026 · stupid science videos.</span>
+    </footer>
+
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
